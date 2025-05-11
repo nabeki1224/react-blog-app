@@ -7,9 +7,13 @@ function App() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
 
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editContent, setEditContent] = useState('')
+
   const handleDelete = (id: number) => {
     setArticles(articles.filter((article) => article.id !== id))
-    // Reactは新しい配列を作って更新するのが主流　→ 
+    // Reactは新しい配列を作って更新するのが主流
   }
 
   return (
@@ -55,14 +59,54 @@ function App() {
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {articles.map((article) => (
           <li key={article.id} style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '1rem' }}>
-            <h2>{article.title}</h2>
-            <p>{article.content}</p>
-            <button
-              onClick={() => handleDelete(article.id)}
-              style={{ marginTop: '0.5rem', color: 'red' }}
-            >
-              削除
-            </button>
+            {editingId === article.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  style={{ width: '100%', marginBottom: '0.5rem' }}
+                />
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  style={{ width: '100%', marginBottom: '0.5rem'}}
+                />
+                <button
+                  onClick={() => {
+                    setArticles(articles.map((a) =>
+                      a.id === article.id ? { ...a, title: editTitle, content: editContent } : a
+                    ))
+                    setEditingId(null)
+                  }}
+                >
+                  保存
+                </button>
+                <button onClick={() => setEditingId(null)} style={{ marginLeft: '1rem' }}>
+                  キャンセル
+                </button>
+              </>
+            ) : (
+              <>
+                <h2>{article.title}</h2>
+                <p>{article.content}</p>
+                <button
+                  onClick={() => {
+                    setEditingId(article.id)
+                    setEditTitle(article.title)
+                    setEditContent(article.content)
+                  }}
+                >
+                  編集
+                </button>
+                <button
+                  onClick={() => handleDelete(article.id)}
+                  style={{ marginTop: '0.5rem', color: 'red' }}
+                >
+                  削除
+                </button>
+              </>
+            )}
           </li>
         ))}
       </ul>
