@@ -7,6 +7,11 @@ function App() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
 
+  const handleDelete = (id: number) => {
+    setArticles(articles.filter((article) => article.id !== id))
+    // Reactは新しい配列を作って更新するのが主流　→ 
+  }
+
   return (
     <div style={{ padding: '2rem' }}>
       <form
@@ -52,6 +57,12 @@ function App() {
           <li key={article.id} style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '1rem' }}>
             <h2>{article.title}</h2>
             <p>{article.content}</p>
+            <button
+              onClick={() => handleDelete(article.id)}
+              style={{ marginTop: '0.5rem', color: 'red' }}
+            >
+              削除
+            </button>
           </li>
         ))}
       </ul>
